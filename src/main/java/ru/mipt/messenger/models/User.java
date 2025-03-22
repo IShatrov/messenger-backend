@@ -79,8 +79,8 @@ public class User {
     private String password;
 
 
-    public User(String nickname, String firstname, String secondname, @NonNull LocalDateTime registrationDttm,
-                @NonNull LocalDate dateOfBirth, Status status, Role role, String profilePictureLink, boolean isActive,
+    public User(String nickname, String firstname, String secondname, LocalDateTime registrationDttm,
+                LocalDate dateOfBirth, Status status, Role role, String profilePictureLink, boolean isActive,
                 Timestamp lastSeen, String phone, String email, String password) {
         this.nickname = nickname;
         this.firstname = firstname;
