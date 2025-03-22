@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.NonNull;
+import ru.mipt.messenger.constants.UserConstants;
 import ru.mipt.messenger.types.usertypes.Role;
 import ru.mipt.messenger.types.usertypes.Status;
 
@@ -21,16 +22,16 @@ public class User {
     private Integer userId;
 
     @NotBlank(message = "Nickname cannot be null or blank")
-    @Length(max = 64, message = "Nickname too long")
+    @Length(max = UserConstants.MAX_NAME_LENGTH, message = "Nickname too long")
     @Column(unique = true, nullable = false)
     private String nickname;
 
     @NotBlank(message = "Firstname cannot be null or blank")
-    @Length(max = 64, message = "Firstname too long")
+    @Length(max = UserConstants.MAX_NAME_LENGTH, message = "Firstname too long")
     @Column(nullable = false)
     private String firstname;
 
-    @Length(max = 64, message = "Secondname too long")
+    @Length(max = UserConstants.MAX_NAME_LENGTH, message = "Secondname too long")
     private String secondname;
 
     @NonNull
@@ -47,7 +48,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Length(max = 256, message = "Link too long")
+    @Length(max = UserConstants.MAX_LINK_LENGTH, message = "Link too long")
     private String profilePictureLink;
 
     @NonNull
@@ -61,13 +62,14 @@ public class User {
     @Pattern(regexp = "^\\+?\\d{5,15}$", message = "Phone must match the following pattern: ^\\+?\\d{5,15}$")
     private String phone;
 
-    @Length(max = 256, message = "Email too long")
+    @Length(max = UserConstants.MAX_EMAIL_LENGTH, message = "Email too long")
     @Email(message = "Email must match email pattern")
     private String email;
 
     @NotBlank(message = "Password cannot be null or blank")
     @Column(nullable = false)
-    @Length(min = 8, max = 256, message = "Invalid password length")
+    @Length(min = UserConstants.MIN_PASSWORD_LENGTH, max =UserConstants.MAX_PASSWORD_LENGTH,
+            message = "Invalid password length")
     @Pattern.List({
             @Pattern(regexp = ".*[A-Z].*", message = "Password must have at least one uppercase letter"),
             @Pattern(regexp = ".*[a-z].*", message = "Password must have at least one lowercase letter")
