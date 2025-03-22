@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import java.util.List;
+
 import ru.mipt.messenger.exceptions.ResourceNotFoundException;
 import ru.mipt.messenger.models.User;
 import ru.mipt.messenger.repositories.UserRepository;
-
-import java.util.List;
 
 @Service
 public class UserService {
@@ -35,7 +35,6 @@ public class UserService {
      * 8) If role is not null, it is either "Admin" or "User". If role is null. it defaults to "User".
      * 9) If profilePictureLink is not null, it has valid length.
      * @throws DataIntegrityViolationException if userId is not null or other database error occurs.
-     * @throws MethodArgumentNotValidException if any field of user is invalid.
      * @throws HttpMessageNotReadableException if JSON is invalid.
      * @param user User to create
      */

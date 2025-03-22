@@ -3,16 +3,16 @@ package ru.mipt.messenger.controllers;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
-import ru.mipt.messenger.exceptions.ResourceNotFoundException;
-import ru.mipt.messenger.models.User;
-import ru.mipt.messenger.services.UserService;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.util.List;
 
+import ru.mipt.messenger.models.User;
+import ru.mipt.messenger.exceptions.ResourceNotFoundException;
+import ru.mipt.messenger.services.UserService;
 
 @RestController
 public class UserController {
@@ -74,7 +74,7 @@ public class UserController {
      * Updates an existing user. Please note that you have to send the entire JSON in request body, even if you want
      * to update a single field.
      * @param user user to update.
-     * @throws ResourceNotFoundException
+     * @throws ResourceNotFoundException if user does not exist
      */
     @PutMapping("{user_base_url}/update")
     public void update(@RequestBody User user) throws ResourceNotFoundException {
@@ -84,7 +84,7 @@ public class UserController {
     /**
      * Deletes an existing user.
      * @param id user to delete.
-     * @throws ResourceNotFoundException if user with updateData.userId does not exist.
+     * @throws ResourceNotFoundException if user with updateData.id does not exist.
      */
     @DeleteMapping("{user_base_url}/delete")
     public void delete(@RequestParam Integer id) throws ResourceNotFoundException {

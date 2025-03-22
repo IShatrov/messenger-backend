@@ -6,13 +6,14 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.NonNull;
-import ru.mipt.messenger.constants.UserConstants;
-import ru.mipt.messenger.types.usertypes.Role;
-import ru.mipt.messenger.types.usertypes.Status;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import ru.mipt.messenger.constants.UserConstants;
+import ru.mipt.messenger.types.usertypes.Role;
+import ru.mipt.messenger.types.usertypes.Status;
 
 @Entity
 @Table(name = "users")
