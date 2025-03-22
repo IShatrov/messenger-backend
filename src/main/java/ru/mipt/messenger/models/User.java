@@ -1,6 +1,11 @@
 package ru.mipt.messenger.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.lang.NonNull;
 import ru.mipt.messenger.types.usertypes.Role;
 import ru.mipt.messenger.types.usertypes.Status;
 
@@ -14,10 +19,26 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
+
+    @NotBlank(message = "Nickname cannot be null or blank")
+    @Length(max = 64, message = "Nickname too long")
+    @Column(unique = true, nullable = false)
     private String nickname;
+
+    @NotBlank(message = "Firstname cannot be null or blank")
+    @Length(max = 64, message = "Firstname too long")
+    @Column(nullable = false)
     private String firstname;
+
+    @Length(max = 64, message = "Secondname too long")
     private String secondname;
+
+    @NonNull
+    @Column(nullable = false)
     private LocalDateTime registrationDttm;
+
+    @NonNull
+    @Column(nullable = false)
     private LocalDate dateOfBirth;
 
     @Enumerated(EnumType.STRING)
@@ -25,15 +46,32 @@ public class User {
     
     @Enumerated(EnumType.STRING)
     private Role role;
-    
+
+    @Length(max = 256, message = "Link too long")
     private String profilePictureLink;
 
-    @Column(name = "is_active") // didn`t work without this annotation
+    @NonNull
+    @Column(name = "is_active", nullable = false) // didn`t work without this annotation
     private boolean isActive;
     
     private Timestamp lastSeen;
+
+    @NotBlank(message = "Phone cannot be null or blank")
+    @Column(nullable = false)
+    @Pattern(regexp = "^\\+?\\d{5,15}$", message = "Phone must match the following pattern: ^\\+?\\d{5,15}$")
     private String phone;
+
+    @Length(max = 256, message = "Email too long")
+    @Email(message = "Email must match email pattern")
     private String email;
+
+    @NotBlank(message = "Password cannot be null or blank")
+    @Column(nullable = false)
+    @Length(min = 8, max = 256, message = "Invalid password length")
+    @Pattern.List({
+            @Pattern(regexp = ".*[A-Z].*", message = "Password must have at least one uppercase letter"),
+            @Pattern(regexp = ".*[a-z].*", message = "Password must have at least one lowercase letter")
+    })
     private String password;
 
     public void setNickname(String nickname) {
