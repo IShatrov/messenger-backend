@@ -30,7 +30,8 @@ public class UserController {
      * 2) nickname, firstname, phone, email and password are not null, not blank, have valid length and match patterns
      * if required.
      * 3) nickname, firstname, phone and email are unique in the database.
-     * 4) registrationDttm is not null and matches pattern "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+     * 4) If registrationDttm is not null, it matches pattern "yyyy-MM-dd'T'HH:mm:ss.SSSZ". If registrationDttm is null,
+     * it defaults to current UTC time.
      * @see <a href="https://docs.spring.io/spring-framework/docs/3.2.4.RELEASE_to_4.0.0.M3/Spring%20Framework%203.2.4.RELEASE/org/springframework/format/annotation/DateTimeFormat.ISO.html">Spring docs</a>
      * 5) dateOfBirth is not null and matches pattern "yyyy-MM-dd".
      * 6) If secondName is not null, it has valid length.
@@ -72,7 +73,7 @@ public class UserController {
 
     /**
      * Updates an existing user. Please note that you have to send the entire JSON in request body, even if you want
-     * to update a single field.
+     * to update a single field. The JSON must follow the same criteria as for create() method.
      * @param user user to update.
      * @throws ResourceNotFoundException if user does not exist
      */

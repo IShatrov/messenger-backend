@@ -10,6 +10,7 @@ import org.springframework.lang.NonNull;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import ru.mipt.messenger.constants.UserConstants;
 import ru.mipt.messenger.types.usertypes.Role;
@@ -76,6 +77,28 @@ public class User {
             @Pattern(regexp = ".*[a-z].*", message = "Password must have at least one lowercase letter")
     })
     private String password;
+
+
+    public User(String nickname, String firstname, String secondname, @NonNull LocalDateTime registrationDttm,
+                @NonNull LocalDate dateOfBirth, Status status, Role role, String profilePictureLink, boolean isActive,
+                Timestamp lastSeen, String phone, String email, String password) {
+        this.nickname = nickname;
+        this.firstname = firstname;
+        this.secondname = secondname;
+        this.dateOfBirth = dateOfBirth;
+        this.status = status;
+        this.role = role;
+        this.profilePictureLink = profilePictureLink;
+        this.isActive = isActive;
+        this.lastSeen = lastSeen;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+
+        if (registrationDttm == null) {
+            this.registrationDttm = LocalDateTime.now(ZoneOffset.UTC);
+        }
+    }
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
