@@ -43,7 +43,7 @@ public class UserController {
      * @throws MethodArgumentNotValidException if any field of user is invalid.
      * @throws HttpMessageNotReadableException if JSON is invalid.
      */
-    @PostMapping("{user_base_url}/create")
+    @PostMapping("{user_base_url}")
     public void create(@Valid @RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) User user) throws
             DataIntegrityViolationException, MethodArgumentNotValidException, HttpMessageNotReadableException {
         userService.createUser(user);
@@ -56,7 +56,7 @@ public class UserController {
      * @return List of matching users. If no users have matching userId or firstname, returns an empty list.
      * @throws IllegalArgumentException if both userId and firstname are null.
      */
-    @GetMapping("{user_base_url}/read")
+    @GetMapping("{user_base_url}")
     public List<User> read(@RequestParam(required = false) Integer id, @RequestParam(required = false) String firstname)
             throws IllegalArgumentException {
         if (id != null) {
@@ -77,7 +77,7 @@ public class UserController {
      * @param user user to update.
      * @throws ResourceNotFoundException if user does not exist
      */
-    @PutMapping("{user_base_url}/update")
+    @PutMapping("{user_base_url}")
     public void update(@RequestBody User user) throws ResourceNotFoundException {
         userService.updateUser(user);
     }
@@ -87,7 +87,7 @@ public class UserController {
      * @param id user to delete.
      * @throws ResourceNotFoundException if user with updateData.id does not exist.
      */
-    @DeleteMapping("{user_base_url}/delete")
+    @DeleteMapping("{user_base_url}")
     public void delete(@RequestParam Integer id) throws ResourceNotFoundException {
         userService.deleteUser(id);
     }
