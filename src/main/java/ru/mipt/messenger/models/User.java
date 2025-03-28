@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.lang.NonNull;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -36,25 +38,31 @@ public class User {
     @Length(max = UserConstants.MAX_NAME_LENGTH, message = "Secondname too long")
     private String secondname;
 
-    @NonNull
+    // Did not use @NotNull because for some reason in caused Spring to create objects with this field set to null
     @Column(nullable = false)
+    @CreationTimestamp
     private LocalDateTime registrationDttm;
 
-    @NonNull
+    @NotNull
     @Column(nullable = false)
     private LocalDate dateOfBirth;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
+    @ColumnDefault("Active")
     private Status status;
     
     @Enumerated(EnumType.STRING)
+    @NotNull
+    @ColumnDefault("User")
     private Role role;
 
     @Length(max = UserConstants.MAX_LINK_LENGTH, message = "Link too long")
     private String profilePictureLink;
 
-    @NonNull
+    @NotNull
     @Column(name = "is_active", nullable = false) // didn`t work without this annotation
+    @ColumnDefault("true")
     private boolean isActive;
     
     private Timestamp lastSeen;
@@ -79,6 +87,14 @@ public class User {
     private String password;
 
 
+    public User() {
+        System.out.println("In empty");
+        this.isActive = true;
+        this.role = Role.User;
+        this.status = Status.Active;
+        this.registrationDttm = LocalDateTime.now(ZoneOffset.UTC);
+    }
+    
     public User(String nickname, String firstname, String secondname, LocalDateTime registrationDttm,
                 LocalDate dateOfBirth, Status status, Role role, String profilePictureLink, boolean isActive,
                 Timestamp lastSeen, String phone, String email, String password) {
@@ -97,6 +113,8 @@ public class User {
 
         if (registrationDttm == null) {
             this.registrationDttm = LocalDateTime.now(ZoneOffset.UTC);
+        } else {
+            this.registrationDttm = registrationDttm;
         }
     }
 
@@ -112,20 +130,24 @@ public class User {
         this.secondname = secondname;
     }
 
-    public void setRegistrationDttm(LocalDateTime registrationDttm) {
-        this.registrationDttm = registrationDttm;
-    }
-
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
     public void setStatus(Status status) {
-        this.status = status;
+        if (status == null) {
+            this.status = Status.Active;
+        } else {
+            this.status = status;
+        }
     }
 
     public void setRole(Role role) {
-        this.role = role;
+        if (role == null) {
+            this.role = Role.User;
+        } else {
+            this.role = role;
+        }
     }
 
     public void setProfilePictureLink(String profilePictureLink) {
