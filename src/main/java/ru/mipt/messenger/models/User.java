@@ -88,7 +88,6 @@ public class User {
 
 
     public User() {
-        System.out.println("In empty");
         this.isActive = true;
         this.role = Role.User;
         this.status = Status.Active;
