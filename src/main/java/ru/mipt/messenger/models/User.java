@@ -1,5 +1,6 @@
 package ru.mipt.messenger.models;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -23,6 +24,7 @@ import ru.mipt.messenger.types.usertypes.Status;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "Id of the user. Must be null when creating a new user.")
     private Integer userId;
 
     @NotBlank(message = "Nickname cannot be null or blank")
@@ -41,6 +43,7 @@ public class User {
     // Did not use @NotNull because for some reason in caused Spring to create objects with this field set to null
     @Column(nullable = false)
     @CreationTimestamp
+    @Schema(description = "User creation date. Automatically generated when creating a new user. If not null, must match pattern \"yyyy-MM-dd'T'HH:mm:ss.SSSZ\"")
     private LocalDateTime registrationDttm;
 
     @NotNull
@@ -84,6 +87,7 @@ public class User {
             @Pattern(regexp = ".*[A-Z].*", message = "Password must have at least one uppercase letter"),
             @Pattern(regexp = ".*[a-z].*", message = "Password must have at least one lowercase letter")
     })
+    @Schema(description = "Must have at least one uppercase and one lowercase letter.")
     private String password;
 
 
