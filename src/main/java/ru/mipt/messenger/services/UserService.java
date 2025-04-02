@@ -1,5 +1,6 @@
 package ru.mipt.messenger.services;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,13 +13,10 @@ import ru.mipt.messenger.models.User;
 import ru.mipt.messenger.repositories.UserRepository;
 
 @Service
+@AllArgsConstructor
 public class UserService {
-    private final UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final UserRepository userRepository;
 
     /**
      * Creates a new user in the database. Please make sure that request body matches the following criteria:
@@ -66,6 +64,14 @@ public class UserService {
      */
     public List<User> readUsersByFirstname(String firstname) {
         return userRepository.findUsersByFirstname(firstname);
+    }
+
+    /**
+     * Get all users from db
+     * @return list of users
+     */
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     /**

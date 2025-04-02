@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +18,10 @@ import ru.mipt.messenger.exceptions.ResourceNotFoundException;
 import ru.mipt.messenger.services.UserService;
 
 @RestController
+@AllArgsConstructor
 public class UserController {
-    private final UserService userService;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserService userService;
 
     /**
      * Creates a new user in the database. Please make sure that request body matches the following criteria:
@@ -88,6 +85,20 @@ public class UserController {
         }
 
         throw new IllegalArgumentException("At least one of the arguments must not be null");
+    }
+
+    /**
+     * Get all users from db using service method getAllUsers
+     * @return list of users
+     */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404", description = "Not found")
+    })
+    @Operation(summary = "Get all users")
+    @GetMapping("/users")
+    public List<User> getAll() {
+        return userService.getAllUsers();
     }
 
     /**
