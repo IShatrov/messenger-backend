@@ -1,12 +1,12 @@
 package ru.mipt.messenger.services;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ru.mipt.messenger.exceptions.ResourceNotFoundException;
 import ru.mipt.messenger.models.User;
@@ -72,6 +72,23 @@ public class UserService {
      */
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    /**
+     * Gets all users whose nickname contains substr after removing whitespaces and bringing everything to lower case
+     * @param substr substring to search
+     * @return list of users
+     */
+    public List<User> getUsersByNicknameOccurrence(String substr) {
+        substr = substr.replaceAll(" ", "");
+        substr = substr.toLowerCase();
+
+        final String str = substr; // lambdas require effectively final variable
+
+        return userRepository.findAll()
+                .stream()
+                .filter(user -> user.getNickname().toLowerCase().replaceAll(" ", "").contains(str))
+                .collect(Collectors.toList());
     }
 
     /**
