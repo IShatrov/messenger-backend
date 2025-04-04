@@ -8,4 +8,5 @@ import ru.mipt.messenger.models.Chat;
 
 public interface ChatRepository extends JpaRepository<Chat, Integer>{
     List<Chat> findChatByName(String name);
+    List<Chat> findChatsByFirstname(String firstName);
 }

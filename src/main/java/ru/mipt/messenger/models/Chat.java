@@ -57,7 +57,7 @@ public class Chat {
     
     public Chat(String name, LocalDateTime creationDttm, Type type) {
         this.name = name;
-        this.type = type
+        this.type = type;
 
         if (creationDttm == null) {
             this.creationDttm = LocalDateTime.now(ZoneOffset.UTC);
