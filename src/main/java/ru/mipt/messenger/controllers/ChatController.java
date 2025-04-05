@@ -60,7 +60,7 @@ public class ChatController {
     /**
      * Reads by chatId if chatId is not null or by firstname if chatId is null.
      * @param id chatId to read.
-     * @param firstname firstname to read.
+     * @param name name to read.
      * @return List of matching chats. If no chats have matching chatId or firstname, returns an empty list.
      * @throws IllegalArgumentException if both chatId and firstname are null.
      */

@@ -29,7 +29,6 @@ public class ChatService {
      * 4) Type cant be nul
      * @param chat Chat to create
      * @throws DataIntegrityViolationException if chatId is not null or other database error occurs.
-     * @throws MethodArgumentNotValidException if any field of chat is invalid.
      * @throws HttpMessageNotReadableException if JSON is invalid.
      */
     public void createChat(Chat chat) throws DataIntegrityViolationException, HttpMessageNotReadableException {
@@ -54,11 +53,11 @@ public class ChatService {
 
     /**
      * Reads chats by firstname.
-     * @param firstname firstname to read.
+     * @param name name to read.
      * @return list of chats whose firstname equals required one. If there are no such chats, returns an empty list.
      */
-    public List<Chat> readChatsByName(String firstname) {
-        return chatRepository.findChatsByFirstname(firstname);
+    public List<Chat> readChatsByName(String name) {
+        return chatRepository.findChatByName(name);
     }
 
     /**
