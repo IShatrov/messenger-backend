@@ -51,7 +51,7 @@ public class ChatController {
       @throws MethodArgumentNotValidException if any field of chat is invalid.
       @throws HttpMessageNotReadableException if JSON is invalid.
             """)
-    @PostMapping("{chat_base_url}")
+    @PostMapping("${chat_base_url}")
     public void create(@Valid @RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Chat chat) throws
             DataIntegrityViolationException, MethodArgumentNotValidException, HttpMessageNotReadableException {
         chatService.createChat(chat);
@@ -67,7 +67,7 @@ public class ChatController {
     @Operation(summary = "Reads chat by chatId or firstname", description = """
                     Reads by chatId if chatId is not null or by firstname if chatId is null. Returns a list of found chats.
                     """)
-    @GetMapping("{chat_base_url}")
+    @GetMapping("${chat_base_url}")
     public List<Chat> read(@RequestParam(required = false) Integer id, @RequestParam(required = false) String name)
             throws IllegalArgumentException {
         if (id != null) {
@@ -118,7 +118,7 @@ public class ChatController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     @Operation(summary = "Deletes a chat")
-    @DeleteMapping("{chat_base_url}")
+    @DeleteMapping("${chat_base_url}")
     public void delete(@RequestParam Integer id) throws ResourceNotFoundException {
         chatService.deleteChat(id);
     }
