@@ -56,7 +56,7 @@ public class UserController {
                   8) If role is not null, it is either "Admin" or "User". If role is null, it defaults to "User".
                   9) If profilePictureLink is not null, it has valid length.
             """)
-    @PostMapping("{user_base_url}")
+    @PostMapping("${user_base_url}")
     public void create(@Valid @RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) User user) throws
             DataIntegrityViolationException, MethodArgumentNotValidException, HttpMessageNotReadableException {
         userService.createUser(user);
@@ -72,7 +72,7 @@ public class UserController {
     @Operation(summary = "Reads user by userId or firstname", description = """
                     Reads by userId if userId is not null or by firstname if userId is null. Returns a list of found users.
                     """)
-    @GetMapping("{user_base_url}")
+    @GetMapping("${user_base_url}")
     public List<User> read(@RequestParam(required = false) Integer id, @RequestParam(required = false) String firstname)
             throws IllegalArgumentException {
         if (id != null) {
@@ -113,7 +113,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     @Operation(summary = "Updates a user")
-    @PutMapping("{user_base_url}")
+    @PutMapping("${user_base_url}")
     public void update(@RequestBody User user) throws ResourceNotFoundException {
         userService.updateUser(user);
     }
@@ -128,7 +128,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Not found")
     })
     @Operation(summary = "Deletes a user")
-    @DeleteMapping("{user_base_url}")
+    @DeleteMapping("${user_base_url}")
     public void delete(@RequestParam Integer id) throws ResourceNotFoundException {
         userService.deleteUser(id);
     }
