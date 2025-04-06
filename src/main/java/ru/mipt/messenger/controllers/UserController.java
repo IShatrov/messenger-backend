@@ -111,8 +111,22 @@ public class UserController {
     })
     @Operation(summary = "Get users whose username contains substring after removing whitespaces and bringing everything to lower case")
     @GetMapping("/{user_base_url}/contains")
-    public List<User> getByOccurrence(@RequestParam String substr) {
-        return userService.getUsersByNicknameOccurrence(substr);
+    public List<User> getBySubstring(@RequestParam String substr) {
+        return userService.getUsersBySubstring(substr);
+    }
+
+    /**
+     * Gets all users whose nickname contains substr after removing whitespaces and bringing everything to lower case
+     * @param substr substring to search
+     * @return list of users
+     */
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200")
+    })
+    @Operation(summary = "Get users whose username contains substring after removing whitespaces and bringing everything to lower case")
+    @GetMapping("/{user_base_url}/contains")
+    public List<User> getUsersBySubstring(@RequestParam String substr) {
+        return userService.getUsersBySubstring(substr);
     }
 
     /**

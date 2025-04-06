@@ -79,7 +79,7 @@ public class UserService {
      * @param substr substring to search
      * @return list of users
      */
-    public List<User> getUsersByNicknameOccurrence(String substr) {
+    public List<User> getUsersBySubstring(String substr) {
         substr = substr.replaceAll(" ", "");
         substr = substr.toLowerCase();
 
