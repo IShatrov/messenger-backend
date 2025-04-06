@@ -116,20 +116,6 @@ public class UserController {
     }
 
     /**
-     * Gets all users whose nickname contains substr after removing whitespaces and bringing everything to lower case
-     * @param substr substring to search
-     * @return list of users
-     */
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200")
-    })
-    @Operation(summary = "Get users whose username contains substring after removing whitespaces and bringing everything to lower case")
-    @GetMapping("/{user_base_url}/contains")
-    public List<User> getUsersBySubstring(@RequestParam String substr) {
-        return userService.getUsersBySubstring(substr);
-    }
-
-    /**
      * Updates an existing user. Please note that you have to send the entire JSON in request body, even if you want
      * to update a single field. The JSON must follow the same criteria as for create() method except userId must
      * be of the user you want to update.
