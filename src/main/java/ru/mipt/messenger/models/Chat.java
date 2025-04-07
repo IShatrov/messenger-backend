@@ -18,13 +18,18 @@ import ru.mipt.messenger.types.chattypes.Type;
 
 @Getter
 @Entity
-@Table(name = "users")
+@Table(name = "chats")
 public class Chat {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "Chat ID. Must be null when creating a new user.")
+    @Schema(description = "Chat ID. Must be null when creating a new chat.")
     private Integer chatId;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    @ColumnDefault("Active")
+    private Type type;
 
     @NotBlank(message = "Chat name cannot be null or blank")
     @Length(max = ChatConstants.MAX_NAME_LENGTH, message = "Chat name too long")
@@ -32,15 +37,20 @@ public class Chat {
     @Setter
     private String name;
 
+    @Length(max = ChatConstants.MAX_NAME_LENGTH, message = "Chat name too long")
+    @Column(nullable = false)
+    @Setter
+    private String picture_link;
+
+    @Length(max = ChatConstants.MAX_NAME_LENGTH, message = "Chat name too long")
+    @Column(nullable = false)
+    @Setter
+    private String description;
+
     @Column(nullable = false)
     @CreationTimestamp
     @Schema(description = "Chat creation date. Automatically generated when creating a new chat. If not null, must match pattern \"yyyy-MM-dd'T'HH:mm:ss.SSSZ\"")
     private LocalDateTime creationDttm;
-
-    @Enumerated(EnumType.STRING)
-    @NotNull
-    @ColumnDefault("Active")
-    private Type type;
 
 
     public Chat() {
