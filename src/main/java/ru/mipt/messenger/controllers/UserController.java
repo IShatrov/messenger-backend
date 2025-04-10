@@ -3,16 +3,20 @@ package ru.mipt.messenger.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import java.util.List;
 
+import ru.mipt.messenger.exceptions.NotEnoughAuthorityException;
 import ru.mipt.messenger.models.User;
 import ru.mipt.messenger.exceptions.ResourceNotFoundException;
 import ru.mipt.messenger.services.UserService;
@@ -63,19 +67,28 @@ public class UserController {
     }
 
     /**
-     * Reads by userId if userId is not null or by firstname if userId is null.
+     * Reads by userId if userId is not null or by firstname if userId is null. If both are null, returns authenticated user.
+     * To read by id, the authenticated user must be admin or id must be equal to id of the authenticated user.
      * @param id userId to read.
      * @param firstname firstname to read.
      * @return List of matching users. If no users have matching userId or firstname, returns an empty list.
      * @throws IllegalArgumentException if both userId and firstname are null.
+     * @throws NotEnoughAuthorityException if the user does not have enough authority
      */
+    @Transactional
     @Operation(summary = "Reads user by userId or firstname", description = """
-                    Reads by userId if userId is not null or by firstname if userId is null. Returns a list of found users.
+                    Reads by userId if userId is not null or by firstname if userId is null. If both are null, returns authenticated user. To read by id, the authenticated user must be admin or id must be equal to id of the authenticated user. Returns a list of users.
                     """)
     @GetMapping("${user_base_url}")
-    public List<User> read(@RequestParam(required = false) Integer id, @RequestParam(required = false) String firstname)
-            throws IllegalArgumentException {
+    public List<User> read(Authentication auth, @RequestParam(required = false) Integer id,
+                           @RequestParam(required = false) String firstname)
+            throws IllegalArgumentException, NotEnoughAuthorityException {
         if (id != null) {
+            if (!auth.getAuthorities().contains(new SimpleGrantedAuthority("Admin"))
+                    && !id.equals(userService.readUserByNickname(auth.getName()).getUserId())) {
+                throw new NotEnoughAuthorityException("Not enough authority");
+            }
+
             var result = userService.readUserById(id);
             return (result == null) ? List.of() : List.of(result);
         }
@@ -84,7 +97,7 @@ public class UserController {
             return userService.readUsersByFirstname(firstname);
         }
 
-        throw new IllegalArgumentException("At least one of the arguments must not be null");
+        return List.of(userService.readUserById(userService.readUserByNickname(auth.getName()).getUserId()));
     }
 
     /**

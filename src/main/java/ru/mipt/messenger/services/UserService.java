@@ -57,6 +57,12 @@ public class UserService {
         return result.orElse(null);
     }
 
+    public User readUserByNickname(String nickname) {
+        var result = userRepository.findUserByNickname(nickname);
+
+        return result.orElse(null);
+    }
+
     /**
      * Reads users by firstname.
      * @param firstname firstname to read.
