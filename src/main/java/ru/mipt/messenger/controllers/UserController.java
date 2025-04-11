@@ -57,7 +57,7 @@ public class UserController {
                             throws IllegalArgumentException, NotEnoughAuthorityException {
         if (id != null) {
             if (!auth.getAuthorities().contains(new SimpleGrantedAuthority("Admin"))
-                    && !id.equals(userService.readUserByNickname(auth.getName()).getUserId())) {
+                    && !id.equals(Integer.valueOf(auth.getName()))) {
                 throw new NotEnoughAuthorityException("Not enough authority");
             }
 

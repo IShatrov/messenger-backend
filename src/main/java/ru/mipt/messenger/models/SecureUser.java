@@ -1,5 +1,6 @@
 package ru.mipt.messenger.models;
 
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,9 +25,10 @@ public class SecureUser implements UserDetails {
         return user.getPassword();
     }
 
+    // userId is more convenient for out app. Could also implement a custom AuthenticationProvider
     @Override
     public String getUsername() {
-        return user.getNickname();
+        return String.valueOf(user.getUserId());
     }
 
     @Override

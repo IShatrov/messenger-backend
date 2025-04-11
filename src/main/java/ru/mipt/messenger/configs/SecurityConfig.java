@@ -10,9 +10,11 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import ru.mipt.messenger.types.usertypes.Role;
 
 @Configuration
 @EnableWebSecurity
@@ -26,11 +28,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // cringe
-                .authorizeHttpRequests((requests) -> requests.requestMatchers(HttpMethod.GET, "/user")
-                        .hasAnyAuthority("User", "Admin"))
                 .authorizeHttpRequests((requests) -> requests.anyRequest()
-                        .hasAuthority("Admin"))
-                .httpBasic(Customizer.withDefaults());
+                        .authenticated())
+                .httpBasic(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
 
         return http.build();
     }
