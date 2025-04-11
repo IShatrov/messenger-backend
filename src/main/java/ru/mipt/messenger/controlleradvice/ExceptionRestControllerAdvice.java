@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.mipt.messenger.exceptions.NotEnoughAuthorityException;
 import ru.mipt.messenger.exceptions.ResourceNotFoundException;
 
 @RestControllerAdvice
@@ -12,6 +13,13 @@ public class ExceptionRestControllerAdvice {
     public ResponseEntity<String> resourceNotFoundExceptionHandler(ResourceNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(NotEnoughAuthorityException.class)
+    public ResponseEntity<String> notEnoughAuthorityException(NotEnoughAuthorityException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(ex.getMessage());
     }
 
