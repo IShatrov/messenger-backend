@@ -28,7 +28,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // cringe
                 .authorizeHttpRequests((requests) -> requests.requestMatchers(HttpMethod.GET, "/user")
                         .hasAnyAuthority("User", "Admin"))
-                .authorizeHttpRequests((requests) -> requests.anyRequest().hasAuthority("Admin"))
+                .authorizeHttpRequests((requests) -> requests.anyRequest()
+                        .hasAuthority("Admin"))
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
