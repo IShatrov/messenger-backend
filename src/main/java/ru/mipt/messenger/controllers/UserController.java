@@ -83,6 +83,14 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200")
+    })
+    @Operation(summary = "Get users whose username contains substring after removing whitespaces and bringing everything to lower case")
+    @GetMapping("/{user_base_url}/contains")
+    public List<User> getBySubstring(@RequestParam String substr) {
+        return userService.getUsersBySubstring(substr);
+    }
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
