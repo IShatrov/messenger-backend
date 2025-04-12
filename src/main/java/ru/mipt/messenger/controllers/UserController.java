@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,6 +18,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import java.util.List;
 
 import ru.mipt.messenger.exceptions.NotEnoughAuthorityException;
+import ru.mipt.messenger.models.SecureUser;
 import ru.mipt.messenger.models.User;
 import ru.mipt.messenger.exceptions.ResourceNotFoundException;
 import ru.mipt.messenger.services.UserService;
@@ -72,6 +74,10 @@ public class UserController {
         return List.of(userService.readUserById(userService.readUserByNickname(auth.getName()).getUserId()));
     }
 
+    @GetMapping("${user_base_url}/current")
+    public User getCurrentUser(@AuthenticationPrincipal SecureUser secureUser) {
+        return secureUser.getUser();
+    }
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
@@ -87,7 +93,7 @@ public class UserController {
             @ApiResponse(responseCode = "200")
     })
     @Operation(summary = "Get users whose username contains substring after removing whitespaces and bringing everything to lower case")
-    @GetMapping("/{user_base_url}/contains")
+    @GetMapping("${user_base_url}/contains")
     public List<User> getBySubstring(@RequestParam String substr) {
         return userService.getUsersBySubstring(substr);
     }
