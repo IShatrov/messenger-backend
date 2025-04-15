@@ -2,7 +2,9 @@ package ru.mipt.messenger;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+@EntityScan(basePackages = {"ru.mipt.messenger.converters", "ru.mipt.messenger.models"}) // required for chat type converter
 @SpringBootApplication
 public class MessengerApplication {
 

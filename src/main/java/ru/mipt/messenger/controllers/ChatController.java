@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import ru.mipt.messenger.models.Chat;
 import ru.mipt.messenger.exceptions.ResourceNotFoundException;
+import ru.mipt.messenger.models.SecureUser;
 import ru.mipt.messenger.services.ChatService;
 
 @RestController
@@ -37,9 +39,10 @@ public class ChatController {
       @throws HttpMessageNotReadableException if JSON is invalid.
             """)
     @PostMapping("${chat_base_url}")
-    public void create(@Valid @RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Chat chat) throws
-            DataIntegrityViolationException, MethodArgumentNotValidException, HttpMessageNotReadableException {
-        chatService.createChat(chat);
+    public void create(@Valid @RequestBody @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Chat chat,
+                       @AuthenticationPrincipal SecureUser secureUser)
+            throws DataIntegrityViolationException, MethodArgumentNotValidException, HttpMessageNotReadableException {
+        chatService.createChat(chat, secureUser.getUser().getUserId());
     }
 
 

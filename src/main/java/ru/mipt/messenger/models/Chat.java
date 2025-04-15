@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Length;
 
@@ -14,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 import ru.mipt.messenger.constants.ChatConstants;
+import ru.mipt.messenger.converters.ChatTypeConverter;
 import ru.mipt.messenger.types.chattypes.Type;
 
 @Getter
@@ -26,10 +26,10 @@ public class Chat {
     @Schema(description = "Chat ID. Must be null when creating a new chat.")
     private Integer chatId;
 
-    @Enumerated(EnumType.STRING)
+    //@Enumerated(EnumType.STRING) // must remove it to use ChatTypeConverter
     @NotNull
-    @ColumnDefault("Active")
-    private Type type;
+    @Convert(converter = ChatTypeConverter.class)
+    private Type chatType;
 
     @NotBlank(message = "Chat name cannot be null or blank")
     @Length(max = ChatConstants.MAX_NAME_LENGTH, message = "Chat name too long")
@@ -40,7 +40,7 @@ public class Chat {
     @Length(max = ChatConstants.MAX_NAME_LENGTH, message = "Chat name too long")
     @Column(nullable = false)
     @Setter
-    private String picture_link;
+    private String pictureLink;
 
     @Length(max = ChatConstants.MAX_NAME_LENGTH, message = "Chat name too long")
     @Column(nullable = false)
@@ -50,30 +50,30 @@ public class Chat {
     @Column(nullable = false)
     @CreationTimestamp
     @Schema(description = "Chat creation date. Automatically generated when creating a new chat. If not null, must match pattern \"yyyy-MM-dd'T'HH:mm:ss.SSSZ\"")
-    private LocalDateTime creationDttm;
+    private LocalDateTime createdDttm;
 
 
     public Chat() {
-        this.type = Type.Private;
-        this.creationDttm = LocalDateTime.now(ZoneOffset.UTC);
+        this.chatType = Type.Private;
+        this.createdDttm = LocalDateTime.now(ZoneOffset.UTC);
     }
     
     public Chat(String name, LocalDateTime creationDttm, Type type) {
         this.name = name;
-        this.type = type;
+        this.chatType = type;
 
         if (creationDttm == null) {
-            this.creationDttm = LocalDateTime.now(ZoneOffset.UTC);
+            this.createdDttm = LocalDateTime.now(ZoneOffset.UTC);
         } else {
-            this.creationDttm = creationDttm;
+            this.createdDttm = creationDttm;
         }
     }
 
     public void setType(Type type) {
         if (type == null) {
-            this.type = Type.Private;
+            this.chatType = Type.Private;
         } else {
-            this.type = type;
+            this.chatType = type;
         }
     }
 }

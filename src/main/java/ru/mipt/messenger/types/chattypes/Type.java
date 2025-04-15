@@ -1,10 +1,32 @@
 package ru.mipt.messenger.types.chattypes;
 
-/**
- * Helper type for Chat class. Values are not capitalised to make it easier to map from JSON to database.
- * @see <a href="https://stackoverflow.com/questions/33637427/spring-requestbody-and-enum-value">Stack Overflow</a>
- */
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Type {
-    Private,
-    Group
+    Private("private"),
+    Group("group");
+
+    private final String text;
+
+    Type(String text) {
+        this.text = text;
+    }
+
+    @Override
+    @JsonValue
+    public String toString() {
+        return text;
+    }
+
+    @JsonCreator
+    public static Type fromText(String text) {
+        for (Type t : Type.values()) {
+            if (t.toString().equals(text)) {
+                return t;
+            }
+        }
+
+        throw new IllegalArgumentException();
+    }
 }
