@@ -3,10 +3,8 @@ package ru.mipt.messenger.controllers;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.mipt.messenger.models.Content;
 import ru.mipt.messenger.models.Message;
 import ru.mipt.messenger.models.SecureUser;
 import ru.mipt.messenger.services.MessageService;
@@ -22,8 +20,8 @@ public class MessageController {
     @Transactional
     public void sendMessage(@AuthenticationPrincipal SecureUser secureUser,
                             @RequestParam Integer chatId,
-                            @RequestParam String text) {
-        messageService.sendMessage(secureUser.getUser().getUserId(), chatId, text);
+                            @RequestBody Content content) {
+        messageService.sendMessage(secureUser.getUser().getUserId(), chatId, content.getText());
     }
 
     @GetMapping("${message_base_url}")
