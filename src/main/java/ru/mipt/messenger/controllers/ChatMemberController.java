@@ -26,4 +26,9 @@ public class ChatMemberController {
     public List<ChatMember> getMyMemberships(@AuthenticationPrincipal SecureUser secureUser) {
         return chatMemberService.getMyMemberships(secureUser.getUser().getUserId());
     }
+
+    @GetMapping("${chat_member_base_url}/all")
+    public List<ChatMember> getAll() {
+        return chatMemberService.getAll();
+    }
 }

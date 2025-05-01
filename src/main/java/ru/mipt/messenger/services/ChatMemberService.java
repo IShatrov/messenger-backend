@@ -19,4 +19,8 @@ public class ChatMemberService {
     public List<ChatMember> getMyMemberships(Integer userId) {
         return chatMemberRepository.findChatMembersByUserId(userId);
     }
+
+    public List<ChatMember> getAll() {
+        return chatMemberRepository.findAll();
+    }
 }

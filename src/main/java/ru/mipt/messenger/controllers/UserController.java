@@ -58,10 +58,10 @@ public class UserController {
                             @RequestParam(required = false) String firstname)
                             throws IllegalArgumentException, NotEnoughAuthorityException {
         if (id != null) {
-            if (!auth.getAuthorities().contains(new SimpleGrantedAuthority("Admin"))
-                    && !id.equals(Integer.valueOf(auth.getName()))) {
-                throw new NotEnoughAuthorityException("Not enough authority");
-            }
+//            if (!auth.getAuthorities().contains(new SimpleGrantedAuthority("Admin"))
+//                    && !id.equals(Integer.valueOf(auth.getName()))) {
+//                throw new NotEnoughAuthorityException("Not enough authority");
+//            }
 
             var result = userService.readUserById(id);
             return (result == null) ? List.of() : List.of(result);
