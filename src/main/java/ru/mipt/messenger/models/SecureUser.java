@@ -28,7 +28,7 @@ public class SecureUser implements UserDetails {
     // userId is more convenient for out app. Could also implement a custom AuthenticationProvider
     @Override
     public String getUsername() {
-        return String.valueOf(user.getUserId());
+        return user.getNickname();
     }
 
     @Override
