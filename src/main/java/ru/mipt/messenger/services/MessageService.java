@@ -18,7 +18,7 @@ public class MessageService {
     private final ChatMemberService chatMemberService;
     private final ContentService contentService;
 
-    public void sendMessage(Integer senderId, Integer chatId, String text) {
+    public Message sendMessage(Integer senderId, Integer chatId, String text) {
         Collection<ChatMember> memberships = chatMemberService.getMyMemberships(senderId);
 
         if (memberships.stream().noneMatch(o -> o.getChatId().equals(chatId))) {
@@ -27,7 +27,7 @@ public class MessageService {
 
         Content content = contentService.create(text);
         Message message = new Message(senderId, chatId, content.getContentId());
-        messageRepository.save(message);
+        return messageRepository.save(message);
     }
 
     public List<Message> getAllInChat(Integer chatId) {
