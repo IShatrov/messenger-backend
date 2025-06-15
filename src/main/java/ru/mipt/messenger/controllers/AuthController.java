@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import ru.mipt.messenger.models.User;
 import ru.mipt.messenger.repositories.UserRepository;
-import ru.mipt.messenger.models.LoginRequest;
 
 @RestController
 public class AuthController {
