@@ -22,6 +22,8 @@ import ru.mipt.messenger.models.SecureUser;
 import ru.mipt.messenger.models.User;
 import ru.mipt.messenger.exceptions.ResourceNotFoundException;
 import ru.mipt.messenger.services.UserService;
+import ru.mipt.messenger.services.SessionInfoService;
+import ru.mipt.messenger.dto.UserDto;
 
 @RestController
 @AllArgsConstructor
@@ -53,30 +55,28 @@ public class UserController {
                     Reads by userId if userId is not null or by firstname if userId is null. If both are null, returns authenticated user. To read by id, the authenticated user must be admin or id must be equal to id of the authenticated user. Returns a list of users.
                     """)
     @GetMapping("${user_base_url}")
-    public List<User> read( Authentication auth,
+    public List<UserDto> read( Authentication auth,
                             @RequestParam(required = false) Integer id,
                             @RequestParam(required = false) String firstname)
                             throws IllegalArgumentException, NotEnoughAuthorityException {
         if (id != null) {
-//            if (!auth.getAuthorities().contains(new SimpleGrantedAuthority("Admin"))
-//                    && !id.equals(Integer.valueOf(auth.getName()))) {
-//                throw new NotEnoughAuthorityException("Not enough authority");
-//            }
-
             var result = userService.readUserById(id);
-            return (result == null) ? List.of() : List.of(result);
+            return (result == null) ? List.of() : List.of(new UserDto(result));
         }
 
         if (firstname != null) {
-            return userService.readUsersByFirstname(firstname);
+            return userService.readUsersByFirstname(firstname).stream()
+                .map(UserDto::new)
+                .toList();
         }
 
-        return List.of(userService.readUserById(userService.readUserByNickname(auth.getName()).getUserId()));
+        var user = userService.readUserById(userService.readUserByNickname(auth.getName()).getUserId());
+        return List.of(new UserDto(user));
     }
 
     @GetMapping("${user_base_url}/current")
-    public User getCurrentUser(@AuthenticationPrincipal SecureUser secureUser) {
-        return secureUser.getUser();
+    public UserDto getCurrentUser(@AuthenticationPrincipal SecureUser secureUser) {
+        return new UserDto(secureUser.getUser());
     }
 
     @ApiResponses(value = {
@@ -85,17 +85,22 @@ public class UserController {
     })
     @Operation(summary = "Get all users")
     @GetMapping("/users")
-    public List<User> getAll() {
-        return userService.getAllUsers();
+    public List<UserDto> getAll() {
+        return userService.getAllUsers().stream()
+            .map(UserDto::new)
+            .toList();
     }
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200")
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404", description = "Not found")
     })
     @Operation(summary = "Get users whose username contains substring after removing whitespaces and bringing everything to lower case")
     @GetMapping("${user_base_url}/contains")
-    public List<User> getBySubstring(@RequestParam String substr) {
-        return userService.getUsersBySubstring(substr);
+    public List<UserDto> getBySubstring(@RequestParam String substr) {
+        return userService.getUsersBySubstring(substr).stream()
+            .map(UserDto::new)
+            .toList();
     }
 
     @ApiResponses(value = {

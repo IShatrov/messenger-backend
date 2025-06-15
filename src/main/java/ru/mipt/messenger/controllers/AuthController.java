@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import ru.mipt.messenger.models.User;
 import ru.mipt.messenger.repositories.UserRepository;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import ru.mipt.messenger.models.SecureUser;
+import ru.mipt.messenger.services.SessionInfoService;
+import ru.mipt.messenger.dto.UserDto;
 
 @RestController
 public class AuthController {
@@ -26,9 +31,11 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SessionInfoService sessionInfoService;
 
     @PostMapping("/login")
-    public User login(HttpServletRequest request, HttpServletResponse response) {
+    public UserDto login(HttpServletRequest request, HttpServletResponse response) {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Basic ")) {
             System.out.println("[LOGIN] No Authorization header provided");
@@ -53,11 +60,16 @@ public class AuthController {
             session.setAttribute("SPRING_SECURITY_CONTEXT", context);
             User user = userRepository.findUserByNickname(username).orElseThrow();
             System.out.println("[LOGIN] Returning user: " + user.getNickname());
-            return user;
+            return new UserDto(user);
         } catch (Exception e) {
             System.out.println("[LOGIN] Authentication failed for: " + username + ". Reason: " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return null;
         }
+    }
+
+    @GetMapping("/session/info")
+    public SessionInfoService.SessionInfoResponse getSessionInfo(@AuthenticationPrincipal SecureUser secureUser) {
+        return sessionInfoService.getSessionInfo(secureUser.getUser().getUserId());
     }
 }
