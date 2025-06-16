@@ -12,6 +12,8 @@ import ru.mipt.messenger.services.MessageService;
 import ru.mipt.messenger.dto.MessageWithTextDto;
 import ru.mipt.messenger.repositories.MessageWithTextRepository;
 import ru.mipt.messenger.services.ContentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.mipt.messenger.controllers.WebSocketController;
 
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class MessageController {
     private final MessageService messageService;
     private final MessageWithTextRepository messageWithTextRepository;
     private final ContentService contentService;
+    private final WebSocketController webSocketController;
 
     @PostMapping("${message_base_url}")
     @Transactional
@@ -29,7 +32,7 @@ public class MessageController {
                             @RequestBody Content content) {
         var saved = messageService.sendMessage(secureUser.getUser().getUserId(), chatId, content.getText());
         var text = contentService.getById(saved.getContentId()).getText();
-        return new MessageWithTextDto(
+        var dto = new MessageWithTextDto(
             saved.getMessageId(),
             saved.getSenderId(),
             saved.getChatId(),
@@ -39,6 +42,9 @@ public class MessageController {
             saved.getReplyToMessageId(),
             saved.getUpdatedDttm()
         );
+        // Отправляем сообщение по WebSocket
+        webSocketController.sendChatMessage(chatId, dto);
+        return dto;
     }
 
     @GetMapping("${message_base_url}")
