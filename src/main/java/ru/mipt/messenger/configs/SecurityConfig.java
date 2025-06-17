@@ -14,15 +14,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-<<<<<<< HEAD
-=======
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
->>>>>>> 071cf216119171e5f558e7664ceeb7eb1bb74d62
 
 @Configuration
 @EnableWebSecurity
@@ -62,15 +59,6 @@ public class SecurityConfig {
 
 
         http
-<<<<<<< HEAD
-                .csrf(AbstractHttpConfigurer::disable) // cringe
-                .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/message-websocket").authenticated()
-                        .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
-=======
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
@@ -88,7 +76,6 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 );
->>>>>>> 071cf216119171e5f558e7664ceeb7eb1bb74d62
 
         return http.build();
     }
