@@ -14,6 +14,8 @@ import java.util.function.Supplier;
 @Service
 @RequiredArgsConstructor
 public class DatabaseUserDetailsService implements UserDetailsService {
+
+    @Autowired
     private final UserRepository userRepository;
 
     @Override
