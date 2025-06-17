@@ -27,9 +27,7 @@ public class MessageService {
 
         Content content = contentService.create(text);
         Message message = new Message(senderId, chatId, content.getContentId());
-        messageRepository.save(message);
-
-        return message;
+        return messageRepository.save(message);
     }
 
     public List<Message> getAllInChat(Integer chatId) {
