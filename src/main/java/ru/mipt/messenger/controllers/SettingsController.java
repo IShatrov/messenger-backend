@@ -7,32 +7,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import ru.mipt.messenger.services.SettingsService;
 import ru.mipt.messenger.controllers.SettingsController;
-import ru.mipt.messenger.dto.SettingsDto;
+import ru.mipt.messenger.models.Settings;
 import ru.mipt.messenger.dto.ThemeUpdateRequest;
+import ru.mipt.messenger.models.SecureUser;
 
 @RestController
-@RequestMapping("/api/settings")
+@AllArgsConstructor
 public class SettingsController {
     private final SettingsService settingsService;
 
-    public SettingsController(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    @GetMapping("${settings_base_url}")
-    public List<SettingsDto> getSettings(Authentication authentication) {
-        Integer userId = Integer.parseInt(authentication.getName());
-        return List.of(settingsService.getSettings(userId));
+    @GetMapping("${settings_base_url}/get")
+    public Settings getSettings(@AuthenticationPrincipal SecureUser secureUser) {
+        return settingsService.getSettings(secureUser.getUser().getUserId());
     }
 
     @PutMapping("${settings_base_url}/theme")
-    public List<SettingsDto> updateTheme(@RequestBody ThemeUpdateRequest request, Authentication authentication) {
-        Integer userId = Integer.parseInt(authentication.getName());
-        return  List.of(settingsService.getSettings(userId));
+    public void updateTheme(@AuthenticationPrincipal SecureUser secureUser, @RequestBody Boolean darkTheme) {
+        settingsService.updateTheme(secureUser.getUser().getUserId(), darkTheme);
     }
 }

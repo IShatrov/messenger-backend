@@ -2,6 +2,7 @@ package ru.mipt.messenger.services;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 import ru.mipt.messenger.dto.SettingsDto;
 import ru.mipt.messenger.repositories.SettingsRepository;
@@ -12,21 +13,12 @@ import ru.mipt.messenger.models.Settings;
 public class SettingsService {
     private final SettingsRepository settingsRepository;
 
-    public SettingsDto getSettings(Integer userId) {
-        Settings settings = settingsRepository.findByUserId(userId)
-                .orElseGet(() -> createDefaultSettings(userId));
-        
-        return new SettingsDto(
-            settings.isDarkTheme(),
-            settings.isShowDateOfBirth(),
-            settings.isChatYourselfDefault(),
-            settings.isContactAutoAccept()
-        );
+    public Settings getSettings(Integer userId) {
+        return settingsRepository.findByUserId(userId);
     }
 
     public void updateTheme(Integer userId, boolean darkTheme) {
-        Settings settings = settingsRepository.findByUserId(userId)
-                .orElseGet(() -> createDefaultSettings(userId));
+        Settings settings = settingsRepository.findByUserId(userId);
         
         settings.setDarkTheme(darkTheme);
         settingsRepository.save(settings);
