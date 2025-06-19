@@ -4,7 +4,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.http.ResponseEntity;
+
+import java.util.List;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -22,16 +24,15 @@ public class SettingsController {
         this.settingsService = settingsService;
     }
 
-    @GetMapping
-    public ResponseEntity<SettingsDto> getSettings(Authentication authentication) {
-        Long userId = Long.parseLong(authentication.getName());
-        return ResponseEntity.ok(settingsService.getSettings(userId));
+    @GetMapping("${settings_base_url}")
+    public List<SettingsDto> getSettings(Authentication authentication) {
+        Integer userId = Integer.parseInt(authentication.getName());
+        return List.of(settingsService.getSettings(userId));
     }
 
-    @PutMapping("/theme")
-    public ResponseEntity<Void> updateTheme(@RequestBody ThemeUpdateRequest request, Authentication authentication) {
-        Long userId = Long.parseLong(authentication.getName());
-        settingsService.updateTheme(userId, request.darkTheme());
-        return ResponseEntity.ok().build();
+    @PutMapping("${settings_base_url}/theme")
+    public List<SettingsDto> updateTheme(@RequestBody ThemeUpdateRequest request, Authentication authentication) {
+        Integer userId = Integer.parseInt(authentication.getName());
+        return  List.of(settingsService.getSettings(userId));
     }
 }

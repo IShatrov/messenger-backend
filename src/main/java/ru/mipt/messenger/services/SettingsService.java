@@ -12,7 +12,7 @@ import ru.mipt.messenger.models.Settings;
 public class SettingsService {
     private final SettingsRepository settingsRepository;
 
-    public SettingsDto getSettings(Long userId) {
+    public SettingsDto getSettings(Integer userId) {
         Settings settings = settingsRepository.findByUserId(userId)
                 .orElseGet(() -> createDefaultSettings(userId));
         
@@ -24,7 +24,7 @@ public class SettingsService {
         );
     }
 
-    public void updateTheme(Long userId, boolean darkTheme) {
+    public void updateTheme(Integer userId, boolean darkTheme) {
         Settings settings = settingsRepository.findByUserId(userId)
                 .orElseGet(() -> createDefaultSettings(userId));
         
@@ -32,7 +32,7 @@ public class SettingsService {
         settingsRepository.save(settings);
     }
 
-    private Settings createDefaultSettings(Long userId) {
+    private Settings createDefaultSettings(Integer userId) {
         Settings settings = new Settings();
         settings.setUserId(userId);
         return settingsRepository.save(settings);
