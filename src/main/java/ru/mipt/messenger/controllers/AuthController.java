@@ -1,6 +1,8 @@
 package ru.mipt.messenger.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import ru.mipt.messenger.models.SecureUser;
 import ru.mipt.messenger.services.SessionInfoService;
 import ru.mipt.messenger.dto.UserDto;
+import ru.mipt.messenger.services.UserService;
 
 @RestController
 public class AuthController {
@@ -31,6 +34,8 @@ public class AuthController {
     private UserRepository userRepository;
     @Autowired
     private SessionInfoService sessionInfoService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/login")
     public UserDto login(HttpServletRequest request, HttpServletResponse response) {
@@ -64,6 +69,13 @@ public class AuthController {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return null;
         }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserDto> register(@Valid @RequestBody User newUser) {
+        userService.createUser(newUser);
+        User user = userRepository.findUserByNickname(newUser.getNickname()).orElseThrow();
+        return ResponseEntity.ok(new UserDto(user));
     }
 
     @GetMapping("/session/info")
