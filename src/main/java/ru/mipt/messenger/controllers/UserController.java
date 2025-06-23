@@ -10,7 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -22,7 +21,6 @@ import ru.mipt.messenger.models.SecureUser;
 import ru.mipt.messenger.models.User;
 import ru.mipt.messenger.exceptions.ResourceNotFoundException;
 import ru.mipt.messenger.services.UserService;
-import ru.mipt.messenger.services.SessionInfoService;
 import ru.mipt.messenger.dto.UserDto;
 
 @RestController
@@ -122,5 +120,15 @@ public class UserController {
     @DeleteMapping("${user_base_url}")
     public void delete(@RequestParam Integer id) throws ResourceNotFoundException {
         userService.deleteUser(id);
+    }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404", description = "Not found")
+    })
+    @Operation(summary = "Search users by partial match in nickname, firstname, or secondname, sorted by match priority")
+    @GetMapping("${user_base_url}/search")
+    public List<UserDto> searchUsers(@RequestParam String query) {
+        return userService.searchUsersByQuery(query);
     }
 }

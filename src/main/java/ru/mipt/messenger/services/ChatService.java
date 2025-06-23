@@ -11,7 +11,11 @@ import java.util.List;
 import ru.mipt.messenger.exceptions.ResourceNotFoundException;
 import ru.mipt.messenger.models.Chat;
 import ru.mipt.messenger.models.ChatMember;
+import ru.mipt.messenger.models.User;
 import ru.mipt.messenger.repositories.ChatRepository;
+import ru.mipt.messenger.repositories.UserRepository;
+import ru.mipt.messenger.controllers.ChatController.PrivateChatResponse;
+import ru.mipt.messenger.controllers.WebSocketController;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +23,8 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
     private final ChatMemberService chatMemberService;
+    private final UserRepository userRepository;
+    private final WebSocketController webSocketController;
 
     public Chat readChatById(Integer id) {
         var result = chatRepository.findById(id);
@@ -52,6 +58,43 @@ public class ChatService {
 
         Chat createdChat = chatRepository.save(chat);
         chatMemberService.createChatMember(new ChatMember(creatorId, createdChat.getChatId()));
+    }
+
+    @Transactional
+    public void createPrivateChat(Integer creatorId, Integer companionId) {
+        Chat chat = new Chat();
+        chat.setType(ru.mipt.messenger.types.chattypes.Type.Private);
+        chat.setName("");
+        chat.setPictureLink("");
+        chat.setDescription("");
+        Chat createdChat = chatRepository.save(chat);
+        chatMemberService.createChatMember(new ChatMember(creatorId, createdChat.getChatId()));
+        chatMemberService.createChatMember(new ChatMember(companionId, createdChat.getChatId()));
+    }
+
+    @Transactional
+    public PrivateChatResponse createPrivateChatWithResponse(Integer creatorId, Integer companionId) {
+        Chat chat = new Chat();
+        chat.setType(ru.mipt.messenger.types.chattypes.Type.Private);
+        chat.setName("");
+        chat.setPictureLink("");
+        chat.setDescription("");
+        Chat createdChat = chatRepository.save(chat);
+        chatMemberService.createChatMember(new ChatMember(creatorId, createdChat.getChatId()));
+        chatMemberService.createChatMember(new ChatMember(companionId, createdChat.getChatId()));
+        User creator = userRepository.findById(creatorId).orElse(null);
+        User companion = userRepository.findById(companionId).orElse(null);
+        PrivateChatResponse response = new PrivateChatResponse(
+            createdChat.getChatId(),
+            createdChat.getChatType().toString(),
+            creator,
+            companion,
+            createdChat.getCreatedDttm().toString()
+        );
+        if (companion != null) {
+            webSocketController.sendNewChatEvent(companionId, response);
+        }
+        return response;
     }
 
     public void deleteChat(Integer id) throws ResourceNotFoundException {

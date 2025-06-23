@@ -18,8 +18,8 @@ public class WebSocketController {
         messagingTemplate.convertAndSend("/topic/chat/" + chatId + "/messages", message);
     }
 
-    // Заглушка: уведомление о создании нового чата для пользователя
-    public void sendNewChatEvent(Integer userId, String chatInfo) {
+    // Уведомление о создании нового чата для пользователя
+    public void sendNewChatEvent(Integer userId, Object chatInfo) {
         messagingTemplate.convertAndSend("/topic/user/" + userId + "/new-chat", chatInfo);
     }
 
