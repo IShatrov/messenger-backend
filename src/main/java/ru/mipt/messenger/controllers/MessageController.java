@@ -12,8 +12,6 @@ import ru.mipt.messenger.services.MessageService;
 import ru.mipt.messenger.dto.MessageWithTextDto;
 import ru.mipt.messenger.repositories.MessageWithTextRepository;
 import ru.mipt.messenger.services.ContentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import ru.mipt.messenger.controllers.WebSocketController;
 
 import java.util.List;
 
