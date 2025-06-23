@@ -123,4 +123,14 @@ public class UserController {
     public void delete(@RequestParam Integer id) throws ResourceNotFoundException {
         userService.deleteUser(id);
     }
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404", description = "Not found")
+    })
+    @Operation(summary = "Search users by partial match in nickname, firstname, or secondname, sorted by match priority")
+    @GetMapping("${user_base_url}/search")
+    public List<UserDto> searchUsers(@RequestParam String query) {
+        return userService.searchUsersByQuery(query);
+    }
 }

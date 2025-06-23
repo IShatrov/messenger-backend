@@ -69,4 +69,8 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
+
+    public List<ru.mipt.messenger.dto.UserDto> searchUsersByQuery(String query) {
+        return userRepository.searchUsersByQuery(query);
+    }
 }

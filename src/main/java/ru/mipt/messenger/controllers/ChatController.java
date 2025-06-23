@@ -18,6 +18,8 @@ import ru.mipt.messenger.models.Chat;
 import ru.mipt.messenger.exceptions.ResourceNotFoundException;
 import ru.mipt.messenger.models.SecureUser;
 import ru.mipt.messenger.services.ChatService;
+import ru.mipt.messenger.dto.UserDto;
+import ru.mipt.messenger.models.User;
 
 @RestController
 @AllArgsConstructor
@@ -96,5 +98,33 @@ public class ChatController {
     @DeleteMapping("${chat_base_url}")
     public void delete(@RequestParam Integer id) throws ResourceNotFoundException {
         chatService.deleteChat(id);
+    }
+
+    @Operation(summary = "Creates a new private chat", description = "Создаёт приватный чат между двумя пользователями по их id.")
+    @PostMapping("${chat_base_url}/private")
+    public PrivateChatResponse createPrivateChat(@RequestBody PrivateChatRequest request) {
+        var result = chatService.createPrivateChatWithResponse(request.creatorId, request.companionId);
+        return result;
+    }
+
+    public static class PrivateChatRequest {
+        public Integer creatorId;
+        public Integer companionId;
+    }
+
+    public static class PrivateChatResponse {
+        public Integer chatId;
+        public String chatType;
+        public UserDto creator;
+        public UserDto companion;
+        public String createdDttm;
+
+        public PrivateChatResponse(Integer chatId, String chatType, User creator, User companion, String createdDttm) {
+            this.chatId = chatId;
+            this.chatType = chatType;
+            this.creator = new UserDto(creator);
+            this.companion = new UserDto(companion);
+            this.createdDttm = createdDttm;
+        }
     }
 }
