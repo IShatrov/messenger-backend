@@ -31,19 +31,18 @@ public class Chat {
     @Convert(converter = ChatTypeConverter.class)
     private Type chatType;
 
-    @NotBlank(message = "Chat name cannot be null or blank")
     @Length(max = ChatConstants.MAX_NAME_LENGTH, message = "Chat name too long")
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Setter
     private String name;
 
     @Length(max = ChatConstants.MAX_NAME_LENGTH, message = "Chat name too long")
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Setter
     private String pictureLink;
 
     @Length(max = ChatConstants.MAX_NAME_LENGTH, message = "Chat name too long")
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Setter
     private String description;
 
