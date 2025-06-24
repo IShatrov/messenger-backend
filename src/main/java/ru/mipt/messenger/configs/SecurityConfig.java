@@ -64,13 +64,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                     .requestMatchers(
-                        "/login",
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/api-docs/**",
-                        "/swagger-resources/**",
-                        "/register"
-                    ).permitAll()
+                        "/swagger-resources/**"
+                    ).hasAuthority("Admin")
+
+                    .requestMatchers("/login", "/register").permitAll()
+
                     .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
