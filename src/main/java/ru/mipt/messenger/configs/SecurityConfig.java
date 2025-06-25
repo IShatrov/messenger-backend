@@ -17,6 +17,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.OncePerRequestFilter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +50,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Разрешенный фронтенд
+        configuration.setAllowedOrigins(List.of("https://netfax.egormeister.ru")); // Разрешенный фронтенд
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -87,5 +93,20 @@ public class SecurityConfig {
                 );
 
         return http.build();
+    }
+
+    @Bean
+    public OncePerRequestFilter requestLoggingFilter() {
+        return new OncePerRequestFilter() {
+            @Override
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+                    throws ServletException, IOException {
+                System.out.println("[REQUEST-LOG] " + request.getMethod() + " " + request.getRequestURI() +
+                        " | Host: " + request.getHeader("Host") +
+                        " | Origin: " + request.getHeader("Origin") +
+                        " | Authorization: " + request.getHeader("Authorization"));
+                filterChain.doFilter(request, response);
+            }
+        };
     }
 }
